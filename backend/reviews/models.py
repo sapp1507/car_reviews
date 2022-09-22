@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator
 from django.db import models
-from django.db.models import Q, F
-
-from .validators import year_validator
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -40,22 +40,24 @@ class Brand(models.Model):
         return self.name
 
 
-class CarModel(models.Model):
+class Car(models.Model):
     """Модель автомобиля"""
     name = models.CharField(max_length=255, verbose_name='Имя')
     brand = models.ForeignKey(
         Brand,
         on_delete=models.CASCADE,
         verbose_name='Автомобиль',
-        related_name='brands'
+        related_name='cars'
     )
     year_release = models.IntegerField(
         verbose_name='год начала выпуска',
-        validators=[year_validator]
+        validators=[MaxValueValidator(timezone.now().year)],
     )
     year_completion = models.IntegerField(
         verbose_name='Год окончания выпуска',
-        validators=[year_validator]
+        validators=[MaxValueValidator(timezone.now().year)],
+        blank=True,
+        null=True
     )
 
     class Meta:
@@ -63,14 +65,15 @@ class CarModel(models.Model):
         verbose_name_plural = 'Модели автомобилей'
         ordering = ['name']
 
-        constraints = [
-            models.CheckConstraint(
-                check=Q(year_release__gt=F('year_completion')),
-                name='release_year_to_big')
-        ]
-
     def __str__(self):
         return self.name
+
+    def clean(self, *args, **kwargs):
+        if self.year_completion and self.year_release > self.year_completion:
+            raise ValidationError(
+                f'Год выпуска: {self.year_release} больше года завершения '
+                f'выпуска: {self.year_completion}')
+        return super().clean(*args, **kwargs)
 
 
 class Comment(models.Model):
@@ -78,11 +81,14 @@ class Comment(models.Model):
     author = models.ForeignKey(
         User,
         related_name='comments',
-        on_delete=models.CASCADE,
-        verbose_name='Автор'
+        on_delete=models.SET_NULL,
+        verbose_name='Автор',
+        null=True,
+        default=None
     )
-    car_model = models.ForeignKey(
-        CarModel,
+    email = models.EmailField(max_length=254, verbose_name='Email', default='anonym')
+    car = models.ForeignKey(
+        Car,
         related_name='comments',
         on_delete=models.CASCADE,
         verbose_name='Модель автомобиля'
