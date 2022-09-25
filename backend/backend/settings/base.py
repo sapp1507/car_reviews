@@ -11,8 +11,6 @@ CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'http://web']
 MIN_YEAR_CAR = 1700
 
 
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -110,7 +108,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
 
     # 'DEFAULT_PAGINATION_CLASS':
