@@ -9,9 +9,9 @@
 
 Проект разварачивается в Docker контейнерах:
 
-backend - приложение api, 
-postgresql - база данных
-nginx - Web сервер
+* backend - приложение api, 
+* postgresql - база данных
+* nginx - Web сервер
 
 Стек технологий
 ----------
