@@ -112,7 +112,7 @@ class BrandForCountrySerializer(serializers.ModelSerializer):
 
 
 class CountrySerializer(serializers.ModelSerializer):
-    """Сериазитор для вывода страны"""
+    """Сериализитор для вывода страны"""
     brands = BrandForCountrySerializer(read_only=True, many=True)
 
     class Meta:

@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 
 User = get_user_model()
 
@@ -51,11 +52,13 @@ class Car(models.Model):
     )
     year_release = models.IntegerField(
         verbose_name='год начала выпуска',
-        validators=[MaxValueValidator(timezone.now().year)],
+        validators=[MaxValueValidator(timezone.now().year),
+                    MinValueValidator(settings.MIN_YEAR_CAR)],
     )
     year_completion = models.IntegerField(
         verbose_name='Год окончания выпуска',
-        validators=[MaxValueValidator(timezone.now().year)],
+        validators=[MaxValueValidator(timezone.now().year),
+                    MinValueValidator(settings.MIN_YEAR_CAR)],
         blank=True,
         null=True
     )
