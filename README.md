@@ -1,6 +1,8 @@
 # car_reviews
 ## Тестовое задание "Отзывы об автомобилях"
 
+[postman workspace](https://www.postman.com/warped-crater-304131/workspace/car-reviews)
+
 Описание проекта
 ----------------
 Проект создан в рамках тестового задания
